@@ -1,0 +1,7 @@
+---
+
+docker_project_name: "{{ netdata_project_name }}"
+
+netdata_port: 19999
+
+netdata_claim_url: https://app.netdata.cloud
