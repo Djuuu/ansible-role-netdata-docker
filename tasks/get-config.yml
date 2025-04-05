@@ -1,0 +1,27 @@
+---
+
+- name: Get Netdata config
+  vars:
+    netdata_scheme: "{{ netdata_api_use_ssl | ternary('https', 'http') }}"
+    netdata_url: "{{ netdata_scheme }}://localhost:{{ netdata_port }}"
+  ansible.builtin.uri:
+    url: "{{ netdata_url }}/netdata.conf"
+    validate_certs: "{{ netdata_api_use_ssl | ternary(false, omit) }}"
+    return_content: true
+  register: netdata_config
+
+- name: Save Netdata config
+  delegate_to: localhost
+  block:
+
+    - name: Ensure Netdata config directory exists
+      ansible.builtin.file:
+        path: "{{ netdata_config_local_path }}/config"
+        state: directory
+        mode: '0750'
+
+    - name: Save Netdata config
+      ansible.builtin.copy:
+        content: "{{ netdata_config.content }}"
+        dest: "{{ netdata_config_local_path }}/config/netdata.conf"
+        mode: '0660'

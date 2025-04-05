@@ -58,3 +58,6 @@ netdata_claim_rooms: []
 #  - 12345678-9abc-def0-1234-456789abcdef # All nodes
 #  - 23456789-abcd-ef01-2344-56789abcdef0 # Servers
 #  - ...
+
+# Local directory for Netdata configuration backup
+netdata_config_local_path: "{{ playbook_dir }}/config/netdata/{{ inventory_hostname }}"

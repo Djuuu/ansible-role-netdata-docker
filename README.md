@@ -87,6 +87,9 @@ netdata_claim_rooms: []
 #  - 12345678-9abc-def0-1234-456789abcdef # All nodes
 #  - 23456789-abcd-ef01-2344-56789abcdef0 # Servers
 #  - ...
+
+# Local directory for Netdata configuration backup 
+netdata_config_local_path: "{{ playbook_dir }}/config/netdata/{{ inventory_hostname }}"
 ```
 
 Dependencies
@@ -98,8 +101,8 @@ This role depends on :
 Some variables allow integration with:
 - [djuuu.traefik_docker](https://github.com/Djuuu/ansible-role-traefik-docker)
 
-Example Playbook
-----------------
+Example Playbooks
+-----------------
 
 ```yaml
 - hosts: all
@@ -107,6 +110,17 @@ Example Playbook
 
   roles:
     - djuuu.netdata_docker
+```
+
+```yaml
+- hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Backup Netdata config
+      ansible.builtin.include_role:
+        name: djuuu.netdata_docker
+        tasks_from: get-config
 ```
 
 License
