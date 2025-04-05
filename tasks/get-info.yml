@@ -1,0 +1,53 @@
+---
+
+- name: Get Netdata info
+  vars:
+    netdata_scheme: "{{ netdata_api_use_ssl | ternary('https', 'http') }}"
+    netdata_url: "{{ netdata_scheme }}://localhost:{{ netdata_port }}"
+  block:
+
+    - name: Ensure Netdata info directory exists
+      delegate_to: localhost
+      tags: always
+      ansible.builtin.file:
+        path: "{{ netdata_config_local_path }}"
+        state: directory
+        mode: '0750'
+
+    - name: Get Netdata info (v1)
+      tags: v1
+      block:
+        - name: Get Netdata info (v1)
+          ansible.builtin.uri:
+            url: "{{ netdata_url }}/api/v1/info"
+            validate_certs: "{{ netdata_api_use_ssl | ternary(false, omit) }}"
+          register: netdata_info
+
+        - name: Save Netdata info (v1)
+          delegate_to: localhost
+          block:
+            - name: Save Netdata info (v1)
+              ansible.builtin.copy:
+                content: "{{ netdata_info.json | to_nice_json(sort_keys=false) }}"
+                dest: "{{ netdata_config_local_path }}/info-v1.json"
+                mode: '0660'
+              register: info_save_result
+
+    - name: Get Netdata info (v2)
+      tags: v2
+      block:
+        - name: Get Netdata info (v2)
+          ansible.builtin.uri:
+            url: "{{ netdata_url }}/api/v2/info"
+            validate_certs: "{{ netdata_api_use_ssl | ternary(false, omit) }}"
+          register: netdata_info
+
+        - name: Save Netdata info (v2)
+          delegate_to: localhost
+          block:
+            - name: Save Netdata info (v2)
+              ansible.builtin.copy:
+                content: "{{ netdata_info.json | to_nice_json(sort_keys=false) }}"
+                dest: "{{ netdata_config_local_path }}/info-v2.json"
+                mode: '0660'
+              register: info_save_result

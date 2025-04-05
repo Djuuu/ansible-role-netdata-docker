@@ -123,6 +123,18 @@ Example Playbooks
         tasks_from: get-config
 ```
 
+```yaml
+- hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Get Netdata info
+      ansible.builtin.include_role:
+        name: djuuu.netdata_docker
+        tasks_from: get-info
+      tags: [always]
+```
+
 License
 -------
 
