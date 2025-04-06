@@ -14,6 +14,20 @@
 
 ## Configure
 
+- name: Configure netdata.conf
+  ansible.builtin.copy:
+    src: "{{ _netdata_conf }}"
+    dest: "{{ docker_project_path }}/config/netdata/"
+    owner: "{{ target_user | default(omit) }}"
+    group: "{{ target_group | default(target_user | default(omit)) }}"
+    mode: '0644'
+  with_fileglob:
+    - "{{ netdata_config_local_path }}/config/netdata.conf"
+  loop_control:
+    loop_var: _netdata_conf
+  tags: ["configure", "configure-netdata"]
+  notify: Restart netdata
+
 - name: Template docker-compose.yml
   ansible.builtin.template:
     src: docker-compose.yml.j2
