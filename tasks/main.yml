@@ -36,6 +36,29 @@
   tags: ["configure", "configure-stream"]
   notify: Restart netdata
 
+- name: Configure plugins
+  vars:
+    _local_root: "{{ netdata_config_local_path }}/config"
+    _remote_root: "{{ docker_project_path }}/config/netdata"
+    _remote_file: "{{ _plugin_file | regex_replace('^' ~ _local_root, _remote_root, count=1) }}"
+  ansible.builtin.copy:
+    src: "{{ _plugin_file }}"
+    dest: "{{ _remote_file }}"
+    owner: "{{ target_user | default(omit) }}"
+    group: "{{ target_group | default(target_user | default(omit)) }}"
+    mode: '0644'
+  with_fileglob:
+    - "{{ _local_root }}/charts.d/*.conf"
+    - "{{ _local_root }}/custom-plugins.d/*.conf"
+    - "{{ _local_root }}/go.d/*.conf"
+    - "{{ _local_root }}/health.d/*.conf"
+    - "{{ _local_root }}/python.d/*.conf"
+    - "{{ _local_root }}/statsd.d/*.conf"
+  loop_control:
+    loop_var: _plugin_file
+  tags: ["configure", "configure-plugins"]
+  notify: Restart netdata
+
 - name: Template docker-compose.yml
   ansible.builtin.template:
     src: docker-compose.yml.j2
