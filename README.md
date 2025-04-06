@@ -109,6 +109,17 @@ netdata_stream_to_destination:
 netdata_stream_to_api_key:
 ```
 
+Config files
+------------
+
+Files in the following locations will be copied in the project's config directory:
+
+- Netdata config:  
+  `config/netdata/{{ inventory_hostname }}/config/netdata.conf`
+- Plugins config:  
+  `config/netdata/{{ inventory_hostname }}/config/go.d/*.conf`  
+  (and other plugin types: `charts.d`, `custom-plugins.d`, `health.d`, `python.d`, `statsd.d`)
+
 Dependencies
 ------------
 
