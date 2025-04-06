@@ -59,5 +59,20 @@ netdata_claim_rooms: []
 #  - 23456789-abcd-ef01-2344-56789abcdef0 # Servers
 #  - ...
 
+# Is node ephemeral?
+netdata_is_ephemeral_node: false
+
 # Local directory for Netdata configuration backup & info
 netdata_config_local_path: "{{ playbook_dir }}/config/netdata/{{ inventory_hostname }}"
+
+## Streaming
+# https://learn.netdata.cloud/docs/observability-centralization-points/metrics-centralization-points/configuring-metrics-centralization-points
+
+# Streaming API key (parent) (generate with uuidgen)
+netdata_stream_api_key:
+# Allowed ips (set to false or empty to disable streaming to host)
+netdata_stream_allow_from: "*"
+
+# Streaming target
+netdata_stream_to_destination:
+netdata_stream_to_api_key:

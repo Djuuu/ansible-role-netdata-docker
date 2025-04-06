@@ -28,6 +28,14 @@
   tags: ["configure", "configure-netdata"]
   notify: Restart netdata
 
+- name: Configure stream.conf
+  ansible.builtin.template:
+    src: stream.conf.j2
+    dest: "{{ docker_project_path }}/config/netdata/stream.conf"
+    mode: '0644'
+  tags: ["configure", "configure-stream"]
+  notify: Restart netdata
+
 - name: Template docker-compose.yml
   ansible.builtin.template:
     src: docker-compose.yml.j2
