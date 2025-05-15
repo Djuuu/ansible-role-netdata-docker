@@ -1,0 +1,55 @@
+---
+
+- name: Get Netdata config (API)
+  vars:
+    netdata_scheme: "{{ netdata_api_use_ssl | ternary('https', 'http') }}"
+    netdata_url: "{{ netdata_scheme }}://localhost:{{ netdata_port }}"
+    local_config_path: "{{ playbook_dir }}/config/netdata/{{ inventory_hostname }}"
+
+    apiToken: ndc.oZR8Clwm7uIV8MC4xnCo0TRYq0HBZ5pdP2pdhDyOdByITBV76qU4jbRgVSE9Dxqn7jUHTDIDvjQHIWsGdhiY5mgjaMfj8FeMxFTdNE6hdHCzDzNxYUAKw4YUZnjhA7MT
+    apiKey: 1e24b34c-d114-11ef-adb7-002215ab7cf1
+
+  block:
+
+    - name: Get Netdata config (API)
+      block:
+
+        - name: Get Netdata config (API)
+          ansible.builtin.uri:
+#            url: "{{ netdata_url }}/api/v1/config?action=tree"
+            url: "{{ netdata_url }}/api/v1/config?action=tree&path=/collectors/jobs"
+#            url: "{{ netdata_url }}/api/v1/config?action=get&id=go.d:collector:httpcheck:Hoarder"
+
+            validate_certs: "{{ netdata_api_use_ssl | ternary(false, omit) }}"
+#            headers:
+#              Authorization: "Bearer {{ apiToken }}"
+#              Authorization: "{{ apiKey }}"
+#              X-Auth-Token: "{{ apiKey }}"
+          register: netdata_config
+
+
+        - name: Debug config
+          ansible.builtin.debug:
+            msg:
+              - "{{ netdata_config.json }}"
+
+        - name: Save collector jobs config
+          vars:
+            collectorJobsQuery: 'tree."/collectors/jobs"'
+            jobsQuery: "[?value.type=='job'].{key: key, value: value}"
+            jobs: "{{
+              netdata_config.json |
+              community.general.json_query(collectorJobsQuery) |
+              dict2items |
+              community.general.json_query(jobsQuery) |
+              items2dict
+            }}"
+          ansible.builtin.debug:
+            msg:
+              - "{{ jobs }}"
+#          delegate_to: localhost
+#          ansible.builtin.copy:
+#            content: "{{ netdata_config.json | to_nice_json(sort_keys=false) }}"
+##            content: "{{ jobs | to_nice_json(sort_keys=false) }}"
+#            dest: "{{ local_config_path }}/collectors-jobs-config.json"
+#            mode: '0660'

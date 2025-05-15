@@ -8,12 +8,12 @@ services:
 
   netdata:
     image: netdata/netdata:{{ netdata_version }}
-    container_name: netdata
+    container_name: {{ docker_project_slug }}
+    restart: {{ docker_project_restart }}
     pid: host
     network_mode: host
-    restart: unless-stopped
 
-    {{ docker_project_compose_service_additional_options | indent(4) }}
+    {{ docker_project_service_additional_options | indent(4) }}
 
     cap_add:
       - SYS_PTRACE

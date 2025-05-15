@@ -18,7 +18,7 @@ netdata_traefik_middlewares: []
 #  - "basic-auth@file"      # see djuuu.traefik_docker files/dynamic-conf/middlewares/basic-auth.yml
 
 # Main service additional docker-compose options (ex: cpu_shares, deploy, ...)
-netdata_compose_service_additional_options: "" # |
+netdata_service_additional_options: "" # |
 #  cpu_shares: 20
 #  deploy:
 #    resources:
