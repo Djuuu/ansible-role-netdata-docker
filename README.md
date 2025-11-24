@@ -63,6 +63,17 @@ netdata_version: stable
 netdata_extra_deb_packages: []
 #  - fail2ban
 
+netdata_default_docker_volumes:
+  - /:/host/root:ro,rslave
+  - /etc/passwd:/host/etc/passwd:ro
+  - /etc/group:/host/etc/group:ro
+  - /etc/localtime:/etc/localtime:ro
+  - /proc:/host/proc:ro
+  - /sys:/host/sys:ro
+  - /etc/os-release:/host/etc/os-release:ro
+  - /var/log:/host/var/log:ro
+  - /var/run/docker.sock:/var/run/docker.sock:ro
+
 netdata_extra_docker_volumes: []
 #  - comment: https://learn.netdata.cloud/docs/collecting-metrics/authentication-and-authorization/fail2ban
 #    volume: /var/run:/host/var/run:ro
